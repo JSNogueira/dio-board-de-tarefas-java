@@ -22,14 +22,15 @@ public class MainMenu {
     private final Scanner scanner = new Scanner(System.in);
 
     public void execute() throws SQLException {
-        System.out.println("Bem vindo ao gerenciador de boards, escolha a opção desejada");
+        System.out.println("\nBem vindo ao gerenciador de boards, escolha a opção desejada");
         var option = -1;
         while (true){
-            System.out.println("1 - Criar um novo board");
+            System.out.println("\n1 - Criar um novo board");
             System.out.println("2 - Selecionar um board existente");
             System.out.println("3 - Excluir um board");
             System.out.println("4 - Sair");
             option = scanner.nextInt();
+            scanner.nextLine();
             switch (option){
                 case 1 -> createBoard();
                 case 2 -> selectBoard();
@@ -43,32 +44,33 @@ public class MainMenu {
     private void createBoard() throws SQLException {
         var entity = new BoardEntity();
         System.out.println("Informe o nome do seu board");
-        entity.setName(scanner.next());
+        entity.setName(scanner.nextLine());
 
         System.out.println("Seu board terá colunas além das 3 padrões? Se sim informe quantas, senão digite '0'");
         var additionalColumns = scanner.nextInt();
+        scanner.nextLine();
 
         List<BoardColumnEntity> columns = new ArrayList<>();
 
         System.out.println("Informe o nome da coluna inicial do board");
-        var initialColumnName = scanner.next();
+        var initialColumnName = scanner.nextLine();
         var initialColumn = createColumn(initialColumnName, INITIAL, 0);
         columns.add(initialColumn);
 
         for (int i = 0; i < additionalColumns; i++) {
             System.out.println("Informe o nome da coluna de tarefa pendente do board");
-            var pendingColumnName = scanner.next();
+            var pendingColumnName = scanner.nextLine();
             var pendingColumn = createColumn(pendingColumnName, PENDING, i + 1);
             columns.add(pendingColumn);
         }
 
         System.out.println("Informe o nome da coluna final");
-        var finalColumnName = scanner.next();
+        var finalColumnName = scanner.nextLine();
         var finalColumn = createColumn(finalColumnName, FINAL, additionalColumns + 1);
         columns.add(finalColumn);
 
         System.out.println("Informe o nome da coluna de cancelamento do baord");
-        var cancelColumnName = scanner.next();
+        var cancelColumnName = scanner.nextLine();
         var cancelColumn = createColumn(cancelColumnName, CANCEL, additionalColumns + 2);
         columns.add(cancelColumn);
 
@@ -81,21 +83,22 @@ public class MainMenu {
     }
 
     private void selectBoard() throws SQLException {
-        // System.out.println("Informe o id do board que deseja selecionar");
-        // var id = scanner.nextLong();
-        // try(var connection = getConnection()){
-        //     var queryService = new BoardQueryService(connection);
-        //     var optional = queryService.findById(id);
-        //     optional.ifPresentOrElse(
-        //             b -> new BoardMenu(b).execute(),
-        //             () -> System.out.printf("Não foi encontrado um board com id %s\n", id)
-        //     );
-        // }
+        System.out.println("Informe o id do board que deseja selecionar");
+        var id = scanner.nextLong();
+        try(var connection = getConnection()){
+            var queryService = new BoardQueryService(connection);
+            var optional = queryService.findById(id);
+            optional.ifPresentOrElse(
+                    b -> new BoardMenu(b).execute(),
+                    () -> System.out.printf("Não foi encontrado um board com id %s\n", id)
+            );
+        }
     }
 
     private void deleteBoard() throws SQLException {
         System.out.println("Informe o id do board que será excluido");
         var id = scanner.nextLong();
+        scanner.nextLine();
         try(var connection = getConnection()){
             var service = new BoardService(connection);
             if (service.delete(id)){

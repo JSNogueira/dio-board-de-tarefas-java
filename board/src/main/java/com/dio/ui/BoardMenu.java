@@ -18,16 +18,16 @@ import static com.dio.persistance.config.ConnectionConfig.getConnection;
 @AllArgsConstructor
 public class BoardMenu {
 
-    private final Scanner scanner = new Scanner(System.in).useDelimiter("\n");
+    private final Scanner scanner = new Scanner(System.in);
 
     private final BoardEntity entity;
 
     public void execute() {
         try {
-            System.out.printf("Bem vindo ao board %s, selecione a operação desejada\n", entity.getId());
+            System.out.printf("\nBem vindo ao board %s, selecione a operação desejada\n", entity.getId());
             var option = -1;
             while (option != 9) {
-                System.out.println("1 - Criar um card");
+                System.out.println("\n1 - Criar um card");
                 System.out.println("2 - Mover um card");
                 System.out.println("3 - Bloquear um card");
                 System.out.println("4 - Desbloquear um card");
@@ -38,12 +38,13 @@ public class BoardMenu {
                 System.out.println("9 - Voltar para o menu anterior um card");
                 System.out.println("10 - Sair");
                 option = scanner.nextInt();
+                scanner.nextLine();
                 switch (option) {
                     case 1 -> createCard();
-                    case 2 -> moveCardToNextColumn();
-                    case 3 -> blockCard();
-                    case 4 -> unblockCard();
-                    case 5 -> cancelCard();
+                    // case 2 -> moveCardToNextColumn();
+                    // case 3 -> blockCard();
+                    // case 4 -> unblockCard();
+                    // case 5 -> cancelCard();
                     case 6 -> showBoard();
                     case 7 -> showColumn();
                     case 8 -> showCard();
@@ -61,9 +62,9 @@ public class BoardMenu {
     private void createCard() throws SQLException{
         var card = new CardEntity();
         System.out.println("Informe o título do card");
-        card.setTitle(scanner.next());
+        card.setTitle(scanner.nextLine());
         System.out.println("Informe a descrição do card");
-        card.setDescription(scanner.next());
+        card.setDescription(scanner.nextLine());
         card.setBoardColumn(entity.getInitialColumn());
         try(var connection = getConnection()){
             new CardService(connection).create(card);
@@ -127,6 +128,7 @@ public class BoardMenu {
     private void showBoard() throws SQLException {
         try(var connection = getConnection()){
             var optional = new BoardQueryService(connection).showBoardDetails(entity.getId());
+            System.out.println();
             optional.ifPresent(b -> {
                 System.out.printf("Board [%s,%s]\n", b.id(), b.name());
                 b.columns().forEach(c ->

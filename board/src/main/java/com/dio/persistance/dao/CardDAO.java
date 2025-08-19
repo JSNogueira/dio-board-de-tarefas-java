@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Optional;
 
 import static com.dio.persistance.converter.OffsetDateTimeConverter.toOffsetDateTime;
@@ -18,7 +19,7 @@ public class CardDAO {
 
     public CardEntity insert(final CardEntity entity) throws SQLException {
         var sql = "INSERT INTO CARDS (title, description, board_column_id) values (?, ?, ?);";
-        try(var statement = connection.prepareStatement(sql)){
+        try(var statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
             var i = 1;
             statement.setString(i ++, entity.getTitle());
             statement.setString(i ++, entity.getDescription());
@@ -35,7 +36,7 @@ public class CardDAO {
 
     public void moveToColumn(final Long columnId, final Long cardId) throws SQLException{
         var sql = "UPDATE CARDS SET board_column_id = ? WHERE id = ?;";
-        try(var statement = connection.prepareStatement(sql)){
+        try(var statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
             var i = 1;
             statement.setLong(i ++, columnId);
             statement.setLong(i, cardId);
@@ -64,7 +65,7 @@ public class CardDAO {
                     ON bc.id = c.board_column_id
                   WHERE c.id = ?;
                 """;
-        try(var statement = connection.prepareStatement(sql)){
+        try(var statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
             statement.setLong(1, id);
             statement.executeQuery();
             var resultSet = statement.getResultSet();
