@@ -41,10 +41,10 @@ public class BoardMenu {
                 scanner.nextLine();
                 switch (option) {
                     case 1 -> createCard();
-                    // case 2 -> moveCardToNextColumn();
-                    // case 3 -> blockCard();
-                    // case 4 -> unblockCard();
-                    // case 5 -> cancelCard();
+                    case 2 -> moveCardToNextColumn();
+                    case 3 -> blockCard();
+                    case 4 -> unblockCard();
+                    case 5 -> cancelCard();
                     case 6 -> showBoard();
                     case 7 -> showColumn();
                     case 8 -> showCard();
@@ -71,59 +71,60 @@ public class BoardMenu {
         }
     }
 
-    // private void moveCardToNextColumn() throws SQLException {
-    //     System.out.println("Informe o id do card que deseja mover para a próxima coluna");
-    //     var cardId = scanner.nextLong();
-    //     var boardColumnsInfo = entity.getBoardColumns().stream()
-    //             .map(bc -> new BoardColumnInfoDTO(bc.getId(), bc.getOrder(), bc.getKind()))
-    //             .toList();
-    //     try(var connection = getConnection()){
-    //         new CardService(connection).moveToNextColumn(cardId, boardColumnsInfo);
-    //     } catch (RuntimeException ex){
-    //         System.out.println(ex.getMessage());
-    //     }
-    // }
+    private void moveCardToNextColumn() throws SQLException {
+        System.out.println("Informe o id do card que deseja mover para a próxima coluna");
+        var cardId = scanner.nextLong();
+        var boardColumnsInfo = entity.getBoardColumns().stream()
+                .map(bc -> new BoardColumnInfoDTO(bc.getId(), bc.getOrder(), bc.getKind()))
+                .toList();
+        try(var connection = getConnection()){
+            new CardService(connection).moveToNextColumn(cardId, boardColumnsInfo);
+        } catch (RuntimeException ex){
+            System.out.println(ex.getMessage());
+        }
+    }
 
-    // private void blockCard() throws SQLException {
-    //     System.out.println("Informe o id do card que será bloqueado");
-    //     var cardId = scanner.nextLong();
-    //     System.out.println("Informe o motivo do bloqueio do card");
-    //     var reason = scanner.next();
-    //     var boardColumnsInfo = entity.getBoardColumns().stream()
-    //             .map(bc -> new BoardColumnInfoDTO(bc.getId(), bc.getOrder(), bc.getKind()))
-    //             .toList();
-    //     try(var connection = getConnection()){
-    //         new CardService(connection).block(cardId, reason, boardColumnsInfo);
-    //     } catch (RuntimeException ex){
-    //         System.out.println(ex.getMessage());
-    //     }
-    // }
+    private void blockCard() throws SQLException {
+        System.out.println("Informe o id do card que será bloqueado");
+        var cardId = scanner.nextLong();
+        scanner.nextLine();
+        System.out.println("Informe o motivo do bloqueio do card");
+        var reason = scanner.nextLine();
+        var boardColumnsInfo = entity.getBoardColumns().stream()
+                .map(bc -> new BoardColumnInfoDTO(bc.getId(), bc.getOrder(), bc.getKind()))
+                .toList();
+        try(var connection = getConnection()){
+            new CardService(connection).block(cardId, reason, boardColumnsInfo);
+        } catch (RuntimeException ex){
+            System.out.println(ex.getMessage());
+        }
+    }
 
-    // private void unblockCard() throws SQLException {
-    //     System.out.println("Informe o id do card que será desbloqueado");
-    //     var cardId = scanner.nextLong();
-    //     System.out.println("Informe o motivo do desbloqueio do card");
-    //     var reason = scanner.next();
-    //     try(var connection = getConnection()){
-    //         new CardService(connection).unblock(cardId, reason);
-    //     } catch (RuntimeException ex){
-    //         System.out.println(ex.getMessage());
-    //     }
-    // }
+    private void unblockCard() throws SQLException {
+        System.out.println("Informe o id do card que será desbloqueado");
+        var cardId = scanner.nextLong();
+        System.out.println("Informe o motivo do desbloqueio do card");
+        var reason = scanner.next();
+        try(var connection = getConnection()){
+            new CardService(connection).unblock(cardId, reason);
+        } catch (RuntimeException ex){
+            System.out.println(ex.getMessage());
+        }
+    }
 
-    // private void cancelCard() throws SQLException {
-    //     System.out.println("Informe o id do card que deseja mover para a coluna de cancelamento");
-    //     var cardId = scanner.nextLong();
-    //     var cancelColumn = entity.getCancelColumn();
-    //     var boardColumnsInfo = entity.getBoardColumns().stream()
-    //             .map(bc -> new BoardColumnInfoDTO(bc.getId(), bc.getOrder(), bc.getKind()))
-    //             .toList();
-    //     try(var connection = getConnection()){
-    //         new CardService(connection).cancel(cardId, cancelColumn.getId(), boardColumnsInfo);
-    //     } catch (RuntimeException ex){
-    //         System.out.println(ex.getMessage());
-    //     }
-    // }
+    private void cancelCard() throws SQLException {
+        System.out.println("Informe o id do card que deseja mover para a coluna de cancelamento");
+        var cardId = scanner.nextLong();
+        var cancelColumn = entity.getCancelColumn();
+        var boardColumnsInfo = entity.getBoardColumns().stream()
+                .map(bc -> new BoardColumnInfoDTO(bc.getId(), bc.getOrder(), bc.getKind()))
+                .toList();
+        try(var connection = getConnection()){
+            new CardService(connection).cancel(cardId, cancelColumn.getId(), boardColumnsInfo);
+        } catch (RuntimeException ex){
+            System.out.println(ex.getMessage());
+        }
+    }
 
     private void showBoard() throws SQLException {
         try(var connection = getConnection()){
