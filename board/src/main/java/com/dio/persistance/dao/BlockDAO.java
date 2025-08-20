@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.OffsetDateTime;
 
 import static com.dio.persistance.converter.OffsetDateTimeConverter.toTimestamp;
